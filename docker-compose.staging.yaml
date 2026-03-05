@@ -1,0 +1,29 @@
+# Override de HOMOLOGAÇÃO — combina com docker-compose.yaml
+services:
+  app:
+    # Build da imagem usando o Dockerfile
+    build:
+      context: .              # Contexto é a pasta raiz do projeto
+      target: production      # Usa o estágio "production" do Dockerfile (imagem otimizada)
+    # Mapeia a porta 3001 do host para a 3000 do container
+    ports:
+      - "${PORT:-3001}:3000"
+    environment:
+      NODE_ENV: production    # Define o ambiente como produção
+    # Reinicia sempre, mesmo após crash
+    restart: always
+    # Limites de recursos para não consumir demais no servidor de homologação
+    deploy:
+      resources:
+        limits:
+          memory: 512M        # Máximo de 512MB de RAM
+          cpus: "0.50"        # Máximo de 50% de 1 CPU
+
+  db:
+    restart: always
+    # Mesmos limites de recursos para o banco
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.50"

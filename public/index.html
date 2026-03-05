@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciador de Anúncios</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Gerenciador de Anúncios</h1>
+      <button class="btn btn-primary" id="btn-new">+ Novo Anúncio</button>
+    </header>
+
+    <div class="filters">
+      <select id="filter-status">
+        <option value="">Todos os status</option>
+        <option value="active">Ativo</option>
+        <option value="paused">Pausado</option>
+        <option value="finished">Finalizado</option>
+      </select>
+    </div>
+
+    <div class="ads-grid" id="ads-grid">
+      <p class="empty-state">Carregando anúncios...</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Novo Anúncio</h2>
+        <button class="btn-close" id="btn-close-modal">&times;</button>
+      </div>
+      <form id="ad-form">
+        <input type="hidden" id="ad-id">
+        <div class="form-group">
+          <label for="ad-title">Título *</label>
+          <input type="text" id="ad-title" required placeholder="Ex: Apartamento 2 quartos">
+        </div>
+        <div class="form-group">
+          <label for="ad-description">Descrição</label>
+          <textarea id="ad-description" rows="3" placeholder="Descreva o anúncio..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ad-price">Preço (R$)</label>
+            <input type="number" id="ad-price" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label for="ad-category">Categoria</label>
+            <input type="text" id="ad-category" placeholder="Ex: Imóveis">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ad-image">URL da Imagem</label>
+          <input type="url" id="ad-image" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label for="ad-status">Status</label>
+          <select id="ad-status">
+            <option value="active">Ativo</option>
+            <option value="paused">Pausado</option>
+            <option value="finished">Finalizado</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

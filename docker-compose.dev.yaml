@@ -1,0 +1,24 @@
+# Override de DESENVOLVIMENTO — combina com docker-compose.yaml
+services:
+  app:
+    # Build da imagem usando o Dockerfile
+    build:
+      context: .          # Contexto é a pasta raiz do projeto
+      target: dev         # Usa o estágio "dev" do Dockerfile (com devDependencies)
+    # Mapeia a porta do host para o container (host:container)
+    ports:
+      - "${PORT:-3000}:3000"
+    # Volumes para desenvolvimento
+    volumes:
+      - .:/app              # Monta o código local dentro do container (live sync)
+      - /app/node_modules   # Preserva o node_modules do container (não sobrescreve com o do host)
+    environment:
+      NODE_ENV: development   # Define o ambiente como desenvolvimento
+    # Reinicia automaticamente, exceto se parado manualmente
+    restart: unless-stopped
+
+  db:
+    # Expõe o MySQL no host para acesso com ferramentas locais (DBeaver, etc)
+    ports:
+      - "${DB_EXTERNAL_PORT:-3306}:3306"
+    restart: unless-stopped

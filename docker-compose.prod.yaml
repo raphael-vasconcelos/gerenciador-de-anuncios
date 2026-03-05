@@ -1,0 +1,32 @@
+# Override de PRODUÇÃO — combina com docker-compose.yaml
+services:
+  app:
+    # Build da imagem usando o Dockerfile
+    build:
+      context: .              # Contexto é a pasta raiz do projeto
+      target: production      # Usa o estágio "production" do Dockerfile (imagem otimizada)
+    # Mapeia a porta 80 do host (HTTP padrão) para a 3000 do container
+    ports:
+      - "${PORT:-80}:3000"
+    environment:
+      NODE_ENV: production    # Define o ambiente como produção
+    # Reinicia sempre, mesmo após crash
+    restart: always
+    # Limites de recursos mais altos para produção
+    deploy:
+      resources:
+        limits:
+          memory: 1G          # Máximo de 1GB de RAM
+          cpus: "1.0"         # Máximo de 1 CPU inteira
+
+  db:
+    restart: always
+    # Garante persistência dos dados em produção
+    volumes:
+      - db-data:/var/lib/mysql
+    # Limites de recursos para o banco em produção
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"

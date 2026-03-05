@@ -1,0 +1,52 @@
+# Arquivo base compartilhado por todos os ambientes (dev, staging, prod)
+services:
+  # Serviço da aplicação Node.js
+  app:
+    # Só inicia depois que o MySQL estiver saudável (healthcheck passando)
+    depends_on:
+      db:
+        condition: service_healthy
+    # Variáveis de ambiente passadas para o container da aplicação
+    environment:
+      DB_HOST: db                                     # Nome do serviço MySQL na rede Docker
+      DB_PORT: 3306                                   # Porta padrão do MySQL
+      DB_USER: ${DB_USER:-app}                        # Usuário do banco (lê do .env, fallback "app")
+      DB_PASSWORD: ${DB_PASSWORD:-app_secret}          # Senha do banco (lê do .env, fallback "app_secret")
+      DB_NAME: ${DB_NAME:-gerenciador_anuncios}       # Nome do banco (lê do .env, fallback "gerenciador_anuncios")
+      PORT: 3000                                      # Porta interna da aplicação
+    # Conecta o container à rede interna
+    networks:
+      - app-network
+
+  # Serviço do banco de dados MySQL
+  db:
+    # Usa a imagem oficial do MySQL 8.0
+    image: mysql:8.0
+    # Variáveis de ambiente para configurar o MySQL na primeira execução
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secret}   # Senha do root
+      MYSQL_DATABASE: ${DB_NAME:-gerenciador_anuncios}           # Cria esse banco automaticamente
+      MYSQL_USER: ${DB_USER:-app}                                # Cria esse usuário automaticamente
+      MYSQL_PASSWORD: ${DB_PASSWORD:-app_secret}                 # Senha do usuário criado
+    # Persiste os dados do MySQL em um volume Docker (não perde dados ao reiniciar)
+    volumes:
+      - db-data:/var/lib/mysql
+    # Verifica se o MySQL está pronto para receber conexões
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_secret}"]
+      interval: 10s      # Verifica a cada 10 segundos
+      timeout: 5s         # Timeout de 5 segundos por verificação
+      retries: 5          # Tenta 5 vezes antes de considerar unhealthy
+      start_period: 30s   # Espera 30s antes de começar a verificar
+    # Conecta o container à rede interna
+    networks:
+      - app-network
+
+# Volume nomeado para persistir os dados do MySQL
+volumes:
+  db-data:
+
+# Rede interna para comunicação entre app e db
+networks:
+  app-network:
+    driver: bridge        # Driver padrão de rede Docker
