@@ -17,6 +17,7 @@
   "dependencies": {
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
+    "drizzle-kit": "^0.31.9",
     "express": "^5.2.1",
     "mysql2": "^3.19.0"
   },
@@ -27,8 +28,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
-    "better-sqlite3": "^12.6.2",
-    "drizzle-kit": "^0.31.9",
+    "better-sqlite3": "^12.6.2",    
     "jest": "^30.2.0",
     "supertest": "^7.2.2"
   }
